@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Refund Desk — project notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* the app token layer, print edition — see docs/DESIGN-SYSTEM.md */
+      :root {
+        --paper: #e9e9de;
+        --card: #f7f8ef;
+        --card-alt: #ffffff;
+        --ink: #13251d;
+        --muted: #4f615a;
+        --divider: #b9bfb4;
+        --lime: #d9f35a;
+        --ink-tile: #20392f;
+        --on-ink: #ffffff;
+        --on-ink-muted: #8da79b;
+      }
+
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+        font-size: 10.5pt;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .page {
+        width: 210mm;
+        /* a hair under A4 so millimetre rounding cannot spill a blank page */
+        height: 296mm;
+        overflow: hidden;
+        padding: 15mm 15mm 12mm;
+        display: flex;
+        flex-direction: column;
+        gap: 5mm;
+      }
+
+      .page + .page {
+        page-break-before: always;
+      }
+
+      .display {
+        font-weight: 800;
+        letter-spacing: -0.06em;
+        line-height: 0.95;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .micro {
+        font-size: 7.5pt;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .band {
+        background: var(--lime);
+        border: 1px solid var(--ink);
+        border-radius: 17px;
+        padding: 8mm;
+      }
+
+      .band h1 {
+        font-size: 29pt;
+        margin-top: 3mm;
+      }
+
+      .band .sub {
+        margin-top: 3mm;
+        font-size: 10pt;
+        font-weight: 700;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--ink);
+        border-radius: 17px;
+        padding: 6.5mm;
+      }
+
+      .card.alt {
+        background: var(--card-alt);
+      }
+
+      h2 {
+        font-size: 13pt;
+        font-weight: 700;
+        margin-top: 1.5mm;
+      }
+
+      .ink {
+        background: var(--ink);
+        color: var(--on-ink);
+        border: 1px solid var(--ink);
+        border-radius: 17px;
+        padding: 6.5mm;
+      }
+
+      .ink .micro {
+        color: var(--on-ink-muted);
+      }
+
+      .ink h2 {
+        color: var(--lime);
+      }
+
+      .ink a {
+        color: var(--lime);
+      }
+
+      .links {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4mm;
+        margin-top: 4mm;
+      }
+
+      .tile {
+        background: var(--ink-tile);
+        border-radius: 10px;
+        padding: 4.5mm;
+      }
+
+      .tile .value {
+        margin-top: 2mm;
+        font-size: 9.5pt;
+        font-weight: 700;
+        word-break: break-all;
+      }
+
+      pre {
+        background: var(--ink);
+        color: var(--on-ink);
+        border-radius: 10px;
+        padding: 4.5mm 5mm;
+        margin-top: 3mm;
+        font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        font-size: 8.5pt;
+        line-height: 1.6;
+        white-space: pre-wrap;
+      }
+
+      pre .c {
+        color: var(--on-ink-muted);
+      }
+
+      pre .k {
+        color: var(--lime);
+      }
+
+      ul {
+        list-style: none;
+        margin-top: 3mm;
+        display: flex;
+        flex-direction: column;
+        gap: 2.2mm;
+      }
+
+      li {
+        padding-left: 5.5mm;
+        position: relative;
+      }
+
+      li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 1.9mm;
+        width: 2.4mm;
+        height: 2.4mm;
+        border: 1px solid var(--ink);
+        border-radius: 2px;
+        background: var(--lime);
+      }
+
+      .ink li::before {
+        border-color: var(--lime);
+      }
+
+      ol {
+        list-style: none;
+        counter-reset: step;
+        margin-top: 3mm;
+        display: flex;
+        flex-direction: column;
+        gap: 2.6mm;
+      }
+
+      ol li {
+        counter-increment: step;
+        padding-left: 7.5mm;
+      }
+
+      ol li::before {
+        content: counter(step);
+        background: var(--lime);
+        color: var(--ink);
+        border: 1px solid var(--ink);
+        border-radius: 5px;
+        width: 5.2mm;
+        height: 5.2mm;
+        top: 0.5mm;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 7.5pt;
+        font-weight: 800;
+      }
+
+      dl {
+        margin-top: 3mm;
+        display: grid;
+        grid-template-columns: 30mm 1fr;
+        gap: 2.4mm 4mm;
+      }
+
+      dt {
+        font-weight: 700;
+        font-size: 9pt;
+      }
+
+      dd {
+        font-size: 9.5pt;
+      }
+
+      strong {
+        font-weight: 700;
+      }
+
+      code {
+        font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        font-size: 8.8pt;
+        background: var(--paper);
+        border: 1px solid var(--divider);
+        border-radius: 4px;
+        padding: 0 1.2mm;
+      }
+
+      .ink code {
+        background: var(--ink-tile);
+        border-color: var(--ink-tile);
+        color: var(--on-ink);
+      }
+
+      a {
+        color: var(--ink);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .foot {
+        margin-top: auto;
+        padding-top: 3.5mm;
+        border-top: 1px solid var(--divider);
+        display: flex;
+        justify-content: space-between;
+        font-size: 8pt;
+      }
+
+      .wordmark {
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        text-transform: uppercase;
+      }
+
+      .wordmark span {
+        font-weight: 700;
+        font-size: 7.5pt;
+        letter-spacing: 0.08em;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- page 1 -->
+    <section class="page">
+      <div class="band">
+        <p class="micro">Support tooling · project notes</p>
+        <h1 class="display">Refund Desk</h1>
+        <p class="sub">
+          An internal tool for a support team to log, review and resolve customer refund
+          requests.
+        </p>
+      </div>
+
+      <div class="ink">
+        <p class="micro">Source and deployment</p>
+        <div class="links">
+          <div class="tile">
+            <p class="micro">Repository</p>
+            <p class="value">
+              <a href="https://github.com/davncntcode/refund-desk"
+                >github.com/davncntcode/refund-desk</a
+              >
+            </p>
+          </div>
+          <div class="tile">
+            <p class="micro">Live deployment</p>
+            <p class="value">
+              <a href="https://app-refunddesk.vercel.app">app-refunddesk.vercel.app</a>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="micro muted">Running it</p>
+        <h2>Four commands, no services to install</h2>
+        <p style="margin-top: 3mm">
+          You need <strong>Node 20.12 or newer</strong> (<code>.nvmrc</code> pins 22) and npm.
+          No Docker, no Postgres, no cloud account, no API keys.
+        </p>
+        <pre>
+git clone https://github.com/davncntcode/refund-desk.git
+cd refund-desk
+npm install
+npm run <span class="k">db:migrate</span>   <span class="c"># creates data/refunds.db, applies drizzle/</span>
+npm run <span class="k">db:seed</span>      <span class="c"># optional: 44 demo requests</span>
+npm run <span class="k">dev</span>          <span class="c"># http://localhost:3000</span></pre
+        >
+        <p style="margin-top: 3.5mm">
+          <strong>No environment file is needed for local work.</strong>
+          <code>DATABASE_URL</code> falls back to <code>file:./data/refunds.db</code> in both
+          the app and the migration config. Copy <code>.env.example</code> to
+          <code>.env.local</code> only to point somewhere else, such as a shared Turso
+          database. The seed is deterministic and clears both tables first, so it is safe to
+          re-run whenever you want a clean slate.
+        </p>
+      </div>
+
+      <div class="foot">
+        <span class="wordmark">Refund <span>/ desk</span></span>
+        <span class="muted">Project notes · page 1 of 4</span>
+      </div>
+    </section>
+
+    <!-- page 2 -->
+    <section class="page">
+      <div class="card alt">
+        <p class="micro muted">Checks</p>
+        <h2>Everything the build enforces</h2>
+        <pre>
+npm run <span class="k">lint</span>        <span class="c"># eslint</span>
+npm run <span class="k">typecheck</span>   <span class="c"># route types, then tsc --noEmit</span>
+npm run <span class="k">build</span>       <span class="c"># production build</span>
+npm <span class="k">test</span>            <span class="c"># 63 unit tests</span>
+npx playwright install chromium  <span class="c"># once</span>
+npm run <span class="k">e2e</span>         <span class="c"># 3 end-to-end tests</span></pre
+        >
+        <p style="margin-top: 3.5mm" class="muted">
+          The end-to-end run builds the app and points it at its own database
+          (<code>data/e2e.db</code>), wiped and migrated before the server starts, so it never
+          touches your working data.
+        </p>
+      </div>
+
+      <div class="card">
+        <p class="micro muted">Note · 01</p>
+        <h2>Assumptions I made</h2>
+        <ul>
+          <li>
+            <strong>It sits behind something.</strong> Scoped as an internal tool on a network
+            or SSO that already authenticates the team, so it has no login of its own. That one
+            assumption drives the biggest limitation below.
+          </li>
+          <li>
+            <strong>The brief named a status field but not the statuses.</strong> The
+            five-state machine, and the rule that a rejection needs a reason, are my design. A
+            team may want different states, so they live in one file.
+          </li>
+          <li><strong>One currency, one timezone</strong> — USD and UTC.</li>
+          <li>
+            <strong>Reason is a category plus a description.</strong> The brief asked for
+            "reason"; a free-text box alone cannot be filtered or reported on, so a request
+            carries both.
+          </li>
+          <li>
+            <strong>Hundreds to thousands of requests, not millions.</strong> Offset
+            pagination, a 5,000-row export cap and <code>max(reference) + 1</code> are
+            comfortable at that size and would not be at ten million.
+          </li>
+          <li>
+            <strong>The amount is what the customer asked for</strong>, not what was eventually
+            paid.
+          </li>
+          <li>
+            <strong>Whoever runs this next has no cloud accounts</strong>, so the default
+            database is a local file.
+          </li>
+        </ul>
+      </div>
+
+      <div class="foot">
+        <span class="wordmark">Refund <span>/ desk</span></span>
+        <span class="muted">Project notes · page 2 of 4</span>
+      </div>
+    </section>
+
+    <!-- page 3 -->
+    <section class="page">
+      <div class="ink">
+        <p class="micro">Note · 02</p>
+        <h2>Improvements beyond the brief</h2>
+        <ul>
+          <li>
+            The status workflow is <strong>enforced in the Server Action</strong>, not only in
+            the UI, so a direct POST cannot skip review or reopen a closed request
+          </li>
+          <li>
+            An <strong>audit timeline</strong> per request, written in the same transaction as
+            the status change
+          </li>
+          <li>
+            A <strong>dashboard</strong> — open exposure, queue standing, 14-day intake, oldest
+            waiting
+          </li>
+          <li>
+            <strong>Search, five sort orders and pagination</strong>, all in the URL so any
+            view is shareable
+          </li>
+          <li>
+            <strong>CSV export</strong> of the active filter, hardened against spreadsheet
+            formula injection
+          </li>
+          <li>
+            <strong>Human references</strong> (<code>RF-2026-0001</code>) rather than exposing
+            ids
+          </li>
+          <li>
+            <strong>Light and dark themes</strong>, designed empty states, and a card list
+            rather than a sideways scrolling table on phones
+          </li>
+          <li>
+            <strong>66 tests</strong> — 63 unit, 3 end-to-end against a real build on its own
+            database
+          </li>
+          <li>
+            A <strong>deterministic seed</strong>, contrast <strong>verified by
+            computation</strong> in both themes, and money as <strong>integer cents</strong>
+            end to end
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <p class="micro muted">Note · 03</p>
+        <h2>Known limitations</h2>
+        <ul>
+          <li>
+            <strong>No authentication, so no actor on the audit trail.</strong> Changes record
+            what and when, not who. Server Actions are reachable by direct POST and carry no
+            authorisation check today.
+          </li>
+          <li>
+            <strong>libSQL/SQLite takes one writer at a time.</strong> Fine for a support team,
+            not for high write concurrency. Reference generation would need a real sequence
+            under heavy concurrent creates.
+          </li>
+          <li>
+            <strong>Offset pagination</strong> slows down deep into a very large table, and
+            <strong>export is synchronous</strong> and capped at 5,000 rows.
+          </li>
+          <li>
+            <strong>Average resolution</strong> is <code>updated_at − created_at</code>, which
+            would skew if a row could be edited after it was resolved. Today it cannot.
+          </li>
+          <li>
+            No partial refunds, no currency beyond USD, no attachments, no customer
+            notifications. No rate limiting, and no CI pipeline.
+          </li>
+          <li>
+            Accessibility was verified by computation and code review — contrast, focus rings,
+            labels, semantics — but <strong>not with an actual screen reader</strong>.
+          </li>
+        </ul>
+      </div>
+
+      <div class="foot">
+        <span class="wordmark">Refund <span>/ desk</span></span>
+        <span class="muted">Project notes · page 3 of 4</span>
+      </div>
+    </section>
+
+    <!-- page 4 -->
+    <section class="page">
+      <div class="card alt">
+        <p class="micro muted">Note · 04</p>
+        <h2>What I would do next with more time</h2>
+        <ol>
+          <li>
+            <strong>Authentication with agent and manager roles</strong>, and an actor on every
+            status event. It closes the one real security gap and unblocks everything else
+            here.
+          </li>
+          <li>
+            <strong>CI on every pull request</strong> — lint, typecheck, unit and e2e — plus a
+            deploy preview.
+          </li>
+          <li>
+            <strong>Tell the customer.</strong> The tool records what the team decided; the
+            email is still a human step.
+          </li>
+          <li>
+            <strong>Connect the money.</strong> "Refunded" is a status, not a payment. Wiring
+            it to the payment provider makes the record true rather than asserted.
+          </li>
+          <li>
+            <strong>Ageing and SLA alerts</strong> on the pending queue, since "waiting
+            longest" is the screen a team would live in.
+          </li>
+          <li>
+            <strong>Bulk actions</strong> on the list, plus keyset pagination and a streamed
+            export if volume grows.
+          </li>
+          <li>
+            A <strong>screen reader pass</strong>, to confirm what the computed checks only
+            imply.
+          </li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <p class="micro muted">For reference</p>
+        <h2>What it is built on</h2>
+        <dl>
+          <dt>Framework</dt>
+          <dd>Next.js 16, App Router, TypeScript</dd>
+          <dt>UI</dt>
+          <dd>Tailwind CSS v4 and shadcn/ui, on a defined visual direction</dd>
+          <dt>Forms</dt>
+          <dd>react-hook-form and zod, one schema shared by the form and the action</dd>
+          <dt>Data</dt>
+          <dd>Drizzle ORM over libSQL — a local SQLite file, or Turso in production</dd>
+          <dt>Writes</dt>
+          <dd>Server Actions only, re-validated with zod at the boundary</dd>
+          <dt>Tests</dt>
+          <dd>vitest for the rules, Playwright for the flow</dd>
+          <dt>Design</dt>
+          <dd>
+            <code>docs/DESIGN-BRIEF.md</code> and <code>docs/DESIGN-SYSTEM.md</code>
+          </dd>
+        </dl>
+      </div>
+
+      <div class="foot">
+        <span class="wordmark">Refund <span>/ desk</span></span>
+        <span class="muted">Project notes · page 4 of 4</span>
+      </div>
+    </section>
+  </body>
+</html>

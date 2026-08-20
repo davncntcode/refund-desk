@@ -140,6 +140,7 @@ it clears both tables first — safe to re-run whenever you want a clean slate.
 | `npm run db:migrate` | Apply pending migrations to `DATABASE_URL` |
 | `npm run db:seed` | Reset and load the demo data |
 | `npm run db:studio` | Browse the database in drizzle studio |
+| `npm run notes:pdf` | Rebuild `public/refund-desk-notes.pdf` from `docs/notes.html` |
 
 ## Database and migrations
 
@@ -314,6 +315,11 @@ No float ever touches an amount. Formatting happens in exactly one place,
 **Timestamps are UTC**, stored as epoch milliseconds and rendered UTC with the zone labelled.
 
 ## Notes on the build
+
+The same notes are downloadable as a four-page PDF from the bottom of the sidebar in the
+running app, or directly at [`/refund-desk-notes.pdf`](public/refund-desk-notes.pdf). It is
+generated from [`docs/notes.html`](docs/notes.html) with `npm run notes:pdf`, styled from the
+same tokens as the interface — so edit the HTML and regenerate rather than editing the PDF.
 
 ### Assumptions
 

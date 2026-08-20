@@ -17,7 +17,8 @@
     "db:seed": "tsx --env-file-if-exists=.env.local lib/db/seed.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "notes:pdf": "node scripts/build-notes-pdf.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
