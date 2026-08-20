@@ -1,4 +1,5 @@
 import { SidebarPanel } from "@/components/shell/sidebar-panel";
+import { NewRefundButton } from "@/components/refunds/new-refund-button";
 import { Topbar } from "@/components/shell/topbar";
 import { getDashboardStats, getStatusCounts } from "@/lib/db/queries";
 
@@ -17,7 +18,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
         {panel}
       </aside>
       <div className="flex min-h-dvh flex-col">
-        <Topbar mobilePanel={panel} />
+        <Topbar mobilePanel={panel} actions={<NewRefundButton />} />
         <main className="flex-1 px-4 py-6 lg:px-8 lg:py-8">
           <div className="mx-auto w-full max-w-7xl">{children}</div>
         </main>
