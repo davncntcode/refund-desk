@@ -1,21 +1,22 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
-import { useState } from "react";
 
-export function GlobalSearch({ defaultValue = "" }: { defaultValue?: string }) {
+export function GlobalSearch() {
   const router = useRouter();
-  const [value, setValue] = useState(defaultValue);
+  const current = useSearchParams().get("q") ?? "";
 
   return (
+    // key remounts the field when the url changes, so no state to sync
     <form
+      key={current}
       role="search"
       className="relative w-full max-w-sm"
       onSubmit={(event) => {
         event.preventDefault();
-        const query = value.trim();
-        router.push(query ? `/refunds?q=${encodeURIComponent(query)}` : "/refunds");
+        const value = String(new FormData(event.currentTarget).get("q") ?? "").trim();
+        router.push(value ? `/refunds?q=${encodeURIComponent(value)}` : "/refunds");
       }}
     >
       <Search
@@ -25,8 +26,7 @@ export function GlobalSearch({ defaultValue = "" }: { defaultValue?: string }) {
       <input
         type="search"
         name="q"
-        value={value}
-        onChange={(event) => setValue(event.target.value)}
+        defaultValue={current}
         placeholder="Search name, email or reference"
         aria-label="Search refund requests"
         className="border-input bg-card focus-visible:ring-ring h-10 w-full rounded-full border pr-4 pl-9 text-sm focus-visible:ring-2 focus-visible:outline-none"
