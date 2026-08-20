@@ -167,3 +167,19 @@ export async function getRefund(id: string) {
 
   return { request, events };
 }
+
+export const EXPORT_LIMIT = 5000;
+
+export async function listRefundsForExport(query: RefundQuery) {
+  const where = and(
+    query.status ? eq(refundRequests.status, query.status) : undefined,
+    query.q ? searchClause(query.q) : undefined,
+  );
+
+  return db
+    .select()
+    .from(refundRequests)
+    .where(where)
+    .orderBy(ORDER_BY[query.sort], desc(refundRequests.id))
+    .limit(EXPORT_LIMIT);
+}

@@ -53,3 +53,14 @@ export function buildRefundsHref(current: RefundQuery, patch: Partial<RefundQuer
   const query = params.toString();
   return query ? `/refunds?${query}` : "/refunds";
 }
+
+export function buildExportHref(current: RefundQuery) {
+  const params = new URLSearchParams();
+
+  if (current.status) params.set("status", current.status);
+  if (current.q) params.set("q", current.q);
+  if (current.sort !== DEFAULT_QUERY.sort) params.set("sort", current.sort);
+
+  const query = params.toString();
+  return query ? `/api/refunds/export?${query}` : "/api/refunds/export";
+}

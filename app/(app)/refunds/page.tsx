@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Inbox, SearchX, X } from "lucide-react";
 import { PageHeader } from "@/components/shell/page-header";
+import { ExportButton } from "@/components/refunds/export-button";
 import { EmptyState } from "@/components/refunds/empty-state";
 import { ListPagination } from "@/components/refunds/list-pagination";
 import { RefundCardList } from "@/components/refunds/refund-card-list";
@@ -28,7 +29,10 @@ export default async function RefundsPage({ searchParams }: PageProps<"/refunds"
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <StatusFilterTabs query={query} counts={counts} />
-        <SortSelect query={query} />
+        <div className="flex items-center gap-2">
+          <ExportButton query={query} disabled={rows.length === 0} />
+          <SortSelect query={query} />
+        </div>
       </div>
 
       {query.q && (
