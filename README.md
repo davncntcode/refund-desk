@@ -25,7 +25,7 @@ install, migrate, seed, go.
 - [Deployment](#deployment)
 - [Design](#design)
 - [Architecture decisions](#architecture-decisions)
-- [What is deliberately not here](#what-is-deliberately-not-here)
+- [Notes on the build](#notes-on-the-build)
 
 ---
 
@@ -280,20 +280,71 @@ No float ever touches an amount. Formatting happens in exactly one place,
 
 **Timestamps are UTC**, stored as epoch milliseconds and rendered UTC with the zone labelled.
 
-## What is deliberately not here
+## Notes on the build
 
-**Authentication.** The tool was scoped as an internal one, sitting behind whatever the team
-already sits behind. This is the first thing to add before exposing it further: Server
-Actions are reachable by direct POST, so an authorisation check belongs at the top of each
-one. It also means status changes record *what* changed and *when*, but not *who* — adding an
-actor is one column on `refund_status_events` plus a value from the session.
+### Assumptions
 
-**Customer-facing anything.** No emails, no notifications, no portal. The tool records what
-the team decided; telling the customer is still a human step.
+- **It sits behind something.** Scoped as an internal tool on a network or SSO that already
+  authenticates the team, so it has no login of its own. That one assumption drives the
+  biggest limitation below.
+- **The brief named a status field but not the statuses.** The five-state machine, and the
+  rule that a rejection needs a reason, are my design. A team may want different states, so
+  they live in one file.
+- **One currency, one timezone** — USD and UTC.
+- **Reason is a category plus a description.** The brief asked for "reason"; a free-text box
+  alone cannot be filtered or reported on, so a request carries both.
+- **Hundreds to thousands of requests, not millions.** Offset pagination, a 5,000-row export
+  cap and `max(reference) + 1` are all comfortable at that size and would not be at ten
+  million.
+- **The amount is what the customer asked for**, not what was eventually paid.
+- **Whoever runs this next has no cloud accounts**, so the default database is a local file.
 
-**Partial refunds, currencies beyond USD, and attachments.** All straightforward to add, none
-of them in scope.
+### Improvements beyond the brief
 
-`npm audit` reports four moderate advisories, all from one development-only esbuild issue
-reached through drizzle-kit. It affects the esbuild dev server, not this application, and the
-available fix is a four-year-old drizzle-kit. Left in place on purpose.
+- The status workflow is **enforced in the Server Action**, not only in the UI, so a direct
+  POST cannot skip review or reopen a closed request
+- An **audit timeline** per request, written in the same transaction as the status change
+- A **dashboard** — open exposure, queue standing, 14-day intake, oldest waiting
+- **Search, five sort orders and pagination**, all in the URL so any view is shareable
+- **CSV export** of the active filter, hardened against spreadsheet formula injection
+- **Human references** (`RF-2026-0001`) rather than exposing ids
+- **Light and dark themes**, designed empty states, and a card list rather than a sideways
+  scrolling table on phones
+- **66 tests** — 63 unit, 3 end-to-end against a real build on its own database
+- A **deterministic seed**, so every machine shows the same 44 requests
+- Contrast **verified by computation** in both themes rather than by eye
+- Money as **integer cents** end to end, formatted in exactly one place
+
+### Known limitations
+
+- **No authentication, so no actor on the audit trail.** Changes record what and when, not
+  who. Server Actions are reachable by direct POST and carry no authorisation check today.
+- **libSQL/SQLite takes one writer at a time.** Fine for a support team, not for high write
+  concurrency. Reference generation (`max + 1` inside a transaction) would need a real
+  sequence under heavy concurrent creates.
+- **Offset pagination** slows down deep into a very large table, and **export is synchronous**
+  and capped at 5,000 rows.
+- **Average resolution** is `updated_at − created_at`, which would skew if a row could be
+  edited after it was resolved. Today it cannot.
+- No partial refunds, no currency beyond USD, no attachments, no customer notifications.
+- No rate limiting, and no CI pipeline.
+- Accessibility was verified by computation and code review — contrast, focus rings, labels,
+  semantics — but **not with an actual screen reader**.
+- `npm audit` reports four moderate advisories, all one development-only esbuild issue reached
+  through drizzle-kit. It affects the esbuild dev server rather than this application, and the
+  offered fix is a four-year-old drizzle-kit. Left alone on purpose.
+- No `LICENSE` file yet, so default copyright applies.
+
+### What I would do next
+
+1. **Authentication with agent and manager roles**, and an actor on every status event. It
+   closes the one real security gap and unblocks everything else here.
+2. **CI on every pull request** — lint, typecheck, unit and e2e — plus a deploy preview.
+3. **Tell the customer.** The tool records what the team decided; the email is still a human
+   step.
+4. **Connect the money.** "Refunded" is a status, not a payment. Wiring it to the payment
+   provider makes the record true rather than asserted.
+5. **Ageing and SLA alerts** on the pending queue, since "waiting longest" is the screen a
+   team would live in.
+6. **Bulk actions** on the list, plus keyset pagination and a streamed export if volume grows.
+7. A **screen reader pass**, to confirm what the computed checks only imply.
