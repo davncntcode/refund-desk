@@ -38,8 +38,8 @@ can never disagree with the request.
 | Layer | Choice |
 | --- | --- |
 | Framework | Next.js 16 (App Router, TypeScript) |
-| UI | Tailwind CSS v4 + shadcn/ui on the radix base |
-| Type | Plus Jakarta Sans (headings) + Inter (body) via `next/font` |
+| UI | Tailwind CSS v4 + shadcn/ui on the radix base, on the Signal visual direction (`docs/DESIGN-BRIEF.md`) |
+| Type | Inter Tight via `next/font` |
 | Forms | react-hook-form + zod, one schema shared by the form and the action |
 | Data | Drizzle ORM over libSQL — a local SQLite file in development, Turso in production |
 | Reads | Server Components querying Drizzle directly |

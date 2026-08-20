@@ -1,122 +1,110 @@
 # Design System
 
-Light, airy, friendly and restrained — rounded cards on an off-white canvas, one saturated
-brand colour plus one warm accent, pastel tints to tell content apart, progress made
-visible. It should read like a current SaaS product, not a back-office database form.
+The visual direction is **Signal · Ethical Portfolio** — see [`DESIGN-BRIEF.md`](DESIGN-BRIEF.md)
+for the brief, the values measured off the reference, and what was adapted rather than copied.
 
-Tokens live in [`app/globals.css`](../app/globals.css). Change them there; never hard-code
-a hex in a component.
+In one line: a paper canvas, **1px ink hairlines instead of shadows**, one acid lime used only
+where the eye should land, inverted ink panels for the figures that matter, and one typeface
+carrying the whole hierarchy through weight and size.
+
+Tokens live in [`app/globals.css`](../app/globals.css). Never hard-code a hex in a component.
 
 ## Colour
 
-`off-white canvas` + `ONE saturated brand` + `ONE warm accent` + `pastel tints`.
-
-**Brand is indigo.** Money movement reads as fintech, and indigo is the colour that carries
-it without turning cold. It fills the active nav pill, the primary button and the focus ring.
-
-**Accent is amber.** Used sparingly, and only where something wants attention: the ring on
-the "awaiting decision" tile, the busiest bar on the intake chart, the pending share of the
-queue breakdown.
-
-The brand ramp is organised by role rather than by lightness, because the dark theme
-inverts which end is light:
+Three families and nothing else: **paper** (the ground), **ink** (text, hairlines, inverted
+panels), **lime** (the signal). Chips add six pastels that only ever carry status.
 
 | Token | Role | Light | Dark |
 | --- | --- | --- | --- |
-| `brand-50/100/200` | tinted surfaces | `#EEF0FF` `#E0E3FF` `#C6CAFB` | `#1B1D3A` `#252A4D` `#333A66` |
-| `brand-500` | the bright brand — links, icons, focus ring | `#4F46E5` | `#8B84FF` |
-| `brand-600` | the primary fill, white text on top | `#4338CA` | `#4F46E5` |
-| `brand-700` | text sitting on a brand surface | `#3730A3` | `#B7B1FF` |
-| `background` | canvas — never pure white | `#F7F8FC` | `#0D0F1A` |
-| `card` | every panel | `#FFFFFF` | `#151827` |
-| `border` | hairlines that whisper | `#E4E7F2` | `#272C42` |
-| `input` | control boundaries, held at 3:1 | `#828CAD` | `#5E6994` |
-| `amber-mark` / `amber-fg` | accent fill / accent text | `#F59E0B` `#9A4A08` | `#FBBF24` `#F0A81C` |
+| `background` | the ground | `#E9E9DE` | `#0E1712` |
+| `card` | every panel | `#F7F8EF` | `#16241E` |
+| `card-alt` | inputs, tabs, callouts | `#FFFFFF` | `#1B2C24` |
+| `foreground` | all text | `#13251D` | `#EFF3E4` |
+| `muted-foreground` | labels, meta | `#4F615A` | `#93A89C` |
+| `border` | the hairline, on everything | `#13251D` | `#527465` |
+| `divider` | incidental rules inside a card | `#B9BFB4` | `#354E43` |
+| `lime` / `primary` | the signal | `#D9F35A` | `#D9F35A` |
+| `primary-foreground` | text on lime — **ink in both themes** | `#13251D` | `#13251D` |
+| `ink` / `ink-tile` | inverted panel and its tiles | `#13251D` / `#20392F` | `#08110D` / `#1B2C24` |
+| `on-ink` / `on-ink-muted` | text inside an inverted panel | `#FFFFFF` / `#8DA79B` | same |
+| `positive` / `negative` | deltas, rejection | `#1F6543` / `#9C2F14` | `#7BD3A4` / `#FF9C7A` |
 
-### Pastel tints
+**Where lime is allowed:** the exposure band, the active sidebar item, primary buttons, the
+busiest bar on the intake chart, the figures inside an inverted panel, and the focus ring in
+dark. Nowhere else. It stops being a signal the moment it becomes decoration.
 
-`mint` `sky` `lilac` `peach` `butter` `rose`, each with a darkened `-fg` counterpart. They
-carry two kinds of meaning and are the most characteristic move in the system: colour as a
-way of telling things apart.
+### Status chips
 
-**Status** — pending `butter`, in review `sky`, approved `mint`, rejected `rose`, refunded
-`lilac`. **Reason category** — duplicate charge `sky`, item not received `peach`, damaged
-item `rose`, cancelled order `lilac`, billing error `butter`, other `muted`.
+`chip-amber` `chip-peri` `chip-sage` `chip-clay` `chip-teal` — pending, in review, approved,
+rejected, refunded. Each is a saturated pastel with **ink text in both themes**, an ink
+hairline, and 11px corners.
 
-Two rules, both non-negotiable:
+Two rules:
 
-1. **Always use the pair.** `bg-mint text-mint-fg`. Never set text in the pastel itself.
-2. **Never let the tint be the only signal.** Every status pill carries its label and an
-   icon; every category chip carries its label.
+1. **Colour is reserved for status.** Reason categories get an outlined code square
+   (`DUP` `NRC` `DMG` `CXL` `BIL` `OTH`) instead of a colour, so the two families never read
+   alike. The square is the reference's holdings badge, re-purposed.
+2. **Never colour alone.** Every chip carries its label and an icon.
 
 ## Typography
 
-Two families, self-hosted through `next/font`:
-
-- **Plus Jakarta Sans** (`font-heading`) — headings, KPI numbers, references.
-- **Inter** (`font-sans`, the default) — body, forms, tables. Its tabular figures keep the
-  amount column lined up.
-
-**Tailwind's default type scale, unmodified.** No custom scale, no modular ratio. Restraint
-comes from usage:
+**Inter Tight**, one family, via `next/font`. Weights 400, 600, 700, 800. Hierarchy comes
+from weight and size, never from a second face.
 
 | Role | Class |
 | --- | --- |
-| Page title | `text-2xl sm:text-3xl font-bold tracking-tight` |
-| Card / section title | `font-heading text-base font-semibold` |
-| Body and form text | `text-sm` |
-| Labels, captions, meta | `text-xs text-muted-foreground` |
-| KPI number | `text-2xl sm:text-3xl font-bold` + `.numeric` |
+| Hero figure | `.display` + `text-[2.75rem] sm:text-6xl` |
+| Page title | `text-2xl sm:text-3xl font-extrabold tracking-tight` |
+| Card title | `text-base font-bold` |
+| Body | `text-sm` · figures in a column `.numeric` |
+| Micro label | `.micro` |
 
-`.numeric` sets tabular figures and the heading face. Put it on every number a person
-compares down a column: amounts, counts, references, page numbers.
+Three utilities carry the direction:
 
-## Shape and depth
+- **`.display`** — weight 800, `letter-spacing: -0.06em`, `line-height: 0.95`, tabular
+  figures. The reference's hero tracking, measured off it exactly.
+- **`.numeric`** — tabular figures with a hair of negative tracking, for anything compared
+  down a column.
+- **`.micro`** — 11px, weight 700, `0.08em` tracking, uppercase. The label above every
+  figure. The reference goes down to 8px; 11px is the floor at desktop viewing distance.
 
-- Cards `rounded-xl`, hairline `border-border`, `shadow-card` — a border *and* a soft
-  shadow, never a heavy one.
-- Buttons, pills, filter tabs and pagination controls are `rounded-full`.
-- Icons sit in a `size-9 rounded-lg` tinted square beside a label.
-- Prefer lightening to adding. If a panel feels heavy, remove the shadow before reaching
-  for another border.
+## Shape, depth and density
+
+- **No shadows anywhere.** A 1px ink border separates every surface. This is the direction's
+  signature and the biggest departure from a conventional dashboard.
+- Cards and panels `rounded-2xl` (17px), inner tiles 10px, chips and controls
+  `rounded-lg` (11px). Only a bare progress bar is fully round.
+- Card padding 20px, inner tiles 14px, list rows 12px, grid gap 16px.
+- Controls are 32–36px tall. Denser than the previous build, in line with the reference.
 
 ## Layout
 
-Three zones: **sidebar 240px** · **main column** · **right rail** (dashboard and detail).
-Content caps at `max-w-7xl`. The sidebar's active item is a filled brand pill; inactive
-items are muted with no background. The bottom card holds the cleared-queue fraction with a
-progress bar.
+Sidebar 240px · main column capped at `max-w-7xl` · right rail on the dashboard and the
+detail page. The sidebar's active item is a lime block with an ink border; its bottom slot
+holds an inverted panel with the cleared-queue figure.
 
-Below `lg` the sidebar becomes a sheet. Below `md` the refund table becomes a card list —
-the same rows, re-arranged, not a horizontally scrolling table.
-
-## Progress, made visible
-
-The taste this follows asks for progress everywhere, and every number here has a
-denominator: the cleared-queue bar in the sidebar, the share bars in the queue breakdown,
-the intake chart with its busiest day called out, `Showing 1–15 of 44` under the list, and
-the character count on the reason field.
+Each screen opens with a **band**: lime and full width on the dashboard (open exposure) and
+on the detail page (the amount requested). Below `lg` the sidebar becomes a sheet; below
+`md` the table becomes a card list.
 
 ## Dark theme
 
-Derived, not taken from a reference. Every token has a dark counterpart, so a component
-built from tokens works in both themes with no `dark:` class. The theme follows the
-operating system by default and the header toggle overrides it. Reach for `dark:` only when
-a component needs a genuinely different treatment — the theme toggle's two icons are the
-only place that does.
+Derived — the reference is light only. Ink becomes the ground, paper inverts to deep green,
+and **lime does not move**: it is the same `#D9F35A` in both themes, always with ink text.
+Chips keep their pastels and their ink text, which is why they read as brightly on the dark
+ground as on paper. The theme follows the OS and the header toggle overrides it.
 
 ## Accessibility floor
 
-Every text pair in the token set was checked by computation, not by eye, and clears 4.5:1 in
-both themes. The tightest are `amber-fg` on `amber-100` at 5.36:1 light, `mutedFg` on
-`muted` at 5.60:1 light, and `brand-500` on `card` at 5.74:1 dark. Re-check after any
-colour change.
+Every pair was checked by computation in both themes. The tightest are `muted-foreground`
+on `background` at 5.38:1 light, `on-ink-muted` on the ink panel at 6.21:1, and
+`muted-foreground` on `card-alt` at 5.81:1 dark. Ink on lime is 12.91:1; ink on the palest
+chip is 7.61:1. Re-check after any colour change.
 
-- Control boundaries (`input`) clear 3:1 against both the card and the canvas. Decorative
-  card hairlines sit below that deliberately — they are not the only indicator of a
-  component, and the focus ring (`brand-500`, 5.7–6.3:1) is.
+- Control boundaries clear 3:1 against both card and ground in both themes — 14.98:1 light,
+  3.10:1 dark. Incidental dividers inside a card sit below that on purpose.
 - Colour never carries meaning alone.
 - Every interactive element has a visible focus ring.
-- Icon-only buttons carry an `aria-label`; chart bars carry `sr-only` text.
-- Filter tabs are real tabs, the search field is a real `role="search"` form, and the
-  status history is an ordered list.
+- Icon-only buttons carry an `aria-label`; chart bars carry `sr-only` text; the reason code
+  square is `aria-hidden` with the full label beside it.
+- Every screen has one `h1`, visually hidden on the dashboard where the band is the masthead.
