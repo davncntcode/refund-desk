@@ -1,26 +1,196 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
+
+/* Token layer — see docs/DESIGN-SYSTEM.md.
+   Indigo brand + amber accent on an off-white canvas, pastel status tints.
+   Type scale is Tailwind's default, unmodified, on purpose. */
 
 @theme inline {
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-jakarta);
+  --font-mono: var(--font-mono-stack);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* brand ramp — 50/100/200 are tinted surfaces, 500 is the bright brand,
+     600 is the primary fill, 700 is text sitting on a brand surface */
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+
+  /* amber — the one warm accent */
+  --color-amber-tint: var(--amber-50);
+  --color-amber-tint-strong: var(--amber-100);
+  --color-amber-mark: var(--amber-500);
+  --color-amber-fg: var(--amber-600);
+
+  /* pastel tints — always the bg + fg pair, never the tint as text */
+  --color-mint: var(--tint-mint);
+  --color-mint-fg: var(--tint-mint-fg);
+  --color-sky: var(--tint-sky);
+  --color-sky-fg: var(--tint-sky-fg);
+  --color-lilac: var(--tint-lilac);
+  --color-lilac-fg: var(--tint-lilac-fg);
+  --color-peach: var(--tint-peach);
+  --color-peach-fg: var(--tint-peach-fg);
+  --color-butter: var(--tint-butter);
+  --color-butter-fg: var(--tint-butter-fg);
+  --color-rose: var(--tint-rose);
+  --color-rose-fg: var(--tint-rose-fg);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+
+  --shadow-card: var(--elevation-card);
+  --shadow-float: var(--elevation-float);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --radius: 0.75rem;
+  --font-mono-stack: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+
+  /* canvas is never pure white */
+  --background: #f7f8fc;
+  --foreground: #14162b;
+  --card: #ffffff;
+  --card-foreground: #14162b;
+  --popover: #ffffff;
+  --popover-foreground: #14162b;
+
+  --primary: #4338ca;
+  --primary-foreground: #ffffff;
+  --secondary: #eef0ff;
+  --secondary-foreground: #3730a3;
+  --muted: #eef0f8;
+  --muted-foreground: #585e7a;
+  --accent: #eef0f8;
+  --accent-foreground: #14162b;
+  --destructive: #c21f37;
+
+  /* card hairlines whisper; control boundaries clear 3:1 */
+  --border: #e4e7f2;
+  --input: #828cad;
+  --ring: #4f46e5;
+
+  --brand-50: #eef0ff;
+  --brand-100: #e0e3ff;
+  --brand-200: #c6cafb;
+  --brand-500: #4f46e5;
+  --brand-600: #4338ca;
+  --brand-700: #3730a3;
+
+  --amber-50: #fef6e7;
+  --amber-100: #fdecc8;
+  --amber-500: #f59e0b;
+  --amber-600: #9a4a08;
+
+  --tint-mint: #dcf5e7;
+  --tint-mint-fg: #116b3d;
+  --tint-sky: #dfeefc;
+  --tint-sky-fg: #14548f;
+  --tint-lilac: #e9e6fd;
+  --tint-lilac-fg: #4b34a8;
+  --tint-peach: #fde8dc;
+  --tint-peach-fg: #8a3e13;
+  --tint-butter: #fdf2d4;
+  --tint-butter-fg: #7a5200;
+  --tint-rose: #fce4e9;
+  --tint-rose-fg: #a11b36;
+
+  --elevation-card: 0 1px 2px 0 rgb(20 22 43 / 0.04), 0 8px 24px -12px rgb(20 22 43 / 0.12);
+  --elevation-float: 0 2px 4px 0 rgb(20 22 43 / 0.06), 0 16px 40px -16px rgb(20 22 43 / 0.22);
+}
+
+.dark {
+  --background: #0d0f1a;
+  --foreground: #eaecf6;
+  --card: #151827;
+  --card-foreground: #eaecf6;
+  --popover: #151827;
+  --popover-foreground: #eaecf6;
+
+  --primary: #4f46e5;
+  --primary-foreground: #ffffff;
+  --secondary: #1b1d3a;
+  --secondary-foreground: #b7b1ff;
+  --muted: #1d2133;
+  --muted-foreground: #a3a9c4;
+  --accent: #1d2133;
+  --accent-foreground: #eaecf6;
+  --destructive: #ff8098;
+
+  --border: #272c42;
+  --input: #5e6994;
+  --ring: #8b84ff;
+
+  --brand-50: #1b1d3a;
+  --brand-100: #252a4d;
+  --brand-200: #333a66;
+  --brand-500: #8b84ff;
+  --brand-600: #4f46e5;
+  --brand-700: #b7b1ff;
+
+  --amber-50: #2a1e06;
+  --amber-100: #3a2a08;
+  --amber-500: #fbbf24;
+  --amber-600: #f0a81c;
+
+  --tint-mint: #10301f;
+  --tint-mint-fg: #5fd08c;
+  --tint-sky: #122a40;
+  --tint-sky-fg: #7cb8f0;
+  --tint-lilac: #211d45;
+  --tint-lilac-fg: #a99bfb;
+  --tint-peach: #37200f;
+  --tint-peach-fg: #f0a87c;
+  --tint-butter: #33270d;
+  --tint-butter-fg: #e8b34d;
+  --tint-rose: #3a1620;
+  --tint-rose-fg: #ff8098;
+
+  --elevation-card: 0 1px 2px 0 rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  --elevation-float: 0 2px 4px 0 rgb(0 0 0 / 0.5), 0 16px 40px -16px rgb(0 0 0 / 0.7);
+}
+
+@layer base {
+  * {
+    @apply border-border;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* numbers people compare down a column */
+  .numeric {
+    font-family: var(--font-heading), var(--font-sans);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
 }
