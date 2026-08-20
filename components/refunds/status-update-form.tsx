@@ -19,6 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import type { RefundStatus } from "@/lib/domain";
 import { requiresNote, STATUS_META } from "@/lib/status";
 import { updateStatusSchema } from "@/lib/validation/refund";
+import { cn } from "@/lib/utils";
 
 const ACTION_LABEL: Record<RefundStatus, string> = {
   pending: "Send back to pending",
@@ -78,8 +79,8 @@ export function StatusUpdateForm({ id, current, next }: Props) {
         {next.map((status) => (
           <Button
             key={status}
-            variant={status === "rejected" ? "destructive" : "default"}
-            className="rounded-full"
+            variant={status === "rejected" ? "secondary" : "default"}
+            className={cn("border-border border font-bold", status === "rejected" && "bg-chip-clay text-chip-ink hover:bg-chip-clay/80")}
             onClick={() => {
               setTarget(status);
               setNote("");

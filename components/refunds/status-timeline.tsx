@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 
 export function StatusTimeline({ events }: { events: RefundStatusEvent[] }) {
   return (
-    <ol className="relative space-y-6">
-      <span className="bg-border absolute top-3 bottom-3 left-[15px] w-px" aria-hidden />
+    <ol className="relative space-y-5">
+      <span className="bg-divider absolute top-3 bottom-3 left-[13px] w-px" aria-hidden />
 
       {events.map((event) => {
         const meta = STATUS_META[event.toStatus];
@@ -18,18 +18,18 @@ export function StatusTimeline({ events }: { events: RefundStatusEvent[] }) {
           <li key={event.id} className="relative flex gap-3">
             <span
               className={cn(
-                "z-10 flex size-8 shrink-0 items-center justify-center rounded-full",
-                isCreation ? "bg-brand-50 text-brand-700" : meta.tint,
+                "border-border z-10 flex size-7 shrink-0 items-center justify-center rounded-lg border",
+                isCreation ? "bg-card-alt" : meta.tint,
               )}
             >
-              <Icon className="size-4" aria-hidden />
+              <Icon className="size-3.5" aria-hidden />
             </span>
-            <div className="min-w-0 flex-1 space-y-1 pt-1">
-              <p className="text-sm font-medium">
+            <div className="min-w-0 flex-1 space-y-1.5 pt-0.5">
+              <p className="text-sm font-bold">
                 {isCreation ? "Request logged" : `Moved to ${meta.label.toLowerCase()}`}
               </p>
               {event.note && (
-                <p className="bg-muted text-muted-foreground rounded-lg px-3 py-2 text-sm">
+                <p className="border-divider bg-muted rounded-lg border px-3 py-2 text-sm">
                   {event.note}
                 </p>
               )}

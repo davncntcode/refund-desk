@@ -11,7 +11,7 @@ export function StatusFilterTabs({ query, counts }: { query: RefundQuery; counts
   const current = query.status ?? "all";
 
   return (
-    <div className="flex flex-wrap items-center gap-2" role="tablist" aria-label="Filter by status">
+    <div className="flex flex-wrap items-center gap-1.5" role="tablist" aria-label="Filter by status">
       {TABS.map(({ value }) => {
         const active = current === value;
         const label = value === "all" ? "All" : STATUS_META[value].label;
@@ -26,21 +26,14 @@ export function StatusFilterTabs({ query, counts }: { query: RefundQuery; counts
               page: 1,
             })}
             className={cn(
-              "focus-visible:ring-ring inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none",
+              "focus-visible:ring-ring inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-bold transition-colors focus-visible:ring-2 focus-visible:outline-none",
               active
-                ? "border-transparent bg-primary text-primary-foreground"
-                : "border-border bg-card text-muted-foreground hover:text-foreground hover:bg-muted",
+                ? "border-border bg-primary text-primary-foreground"
+                : "border-divider bg-card-alt text-muted-foreground hover:text-foreground hover:border-border",
             )}
           >
             {label}
-            <span
-              className={cn(
-                "numeric text-xs",
-                active ? "text-primary-foreground/80" : "text-muted-foreground",
-              )}
-            >
-              {counts[value]}
-            </span>
+            <span className="numeric">{counts[value]}</span>
           </Link>
         );
       })}

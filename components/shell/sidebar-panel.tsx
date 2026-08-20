@@ -1,9 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { Receipt } from "lucide-react";
 import { SidebarNav } from "./sidebar-nav";
 import type { StatusCounts } from "@/lib/db/queries";
-import { Progress } from "@/components/ui/progress";
 
 type Props = {
   counts: StatusCounts;
@@ -20,29 +18,25 @@ export function SidebarPanel({ counts, resolved, total, onNavigate }: Props) {
       <Link
         href="/"
         onClick={onNavigate}
-        className="focus-visible:ring-ring flex items-center gap-2.5 rounded-lg px-2 py-1 focus-visible:ring-2 focus-visible:outline-none"
+        className="focus-visible:ring-ring flex items-baseline gap-1.5 rounded-lg px-1 py-1 focus-visible:ring-2 focus-visible:outline-none"
       >
-        <span className="bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-lg">
-          <Receipt className="size-5" aria-hidden />
-        </span>
-        <span className="font-heading text-base font-semibold tracking-tight">Refund Desk</span>
+        <span className="text-xl font-extrabold tracking-tight uppercase">Refund</span>
+        <span className="micro text-muted-foreground">/ desk</span>
       </Link>
 
       <Suspense fallback={<div className="h-56" />}>
         <SidebarNav counts={counts} onNavigate={onNavigate} />
       </Suspense>
 
-      <div className="mt-auto">
-        <div className="bg-brand-50 rounded-xl p-4">
-          <p className="text-brand-700 font-heading text-sm font-semibold">Queue cleared</p>
-          <p className="text-brand-700/80 mt-1 text-xs">
-            Requests closed out, refunded or rejected.
-          </p>
-          <Progress value={percent} className="mt-3 h-2" />
-          <p className="numeric text-brand-700 mt-2 text-xs font-medium">
-            {resolved}/{total} ({percent}%)
-          </p>
+      <div className="bg-ink mt-auto rounded-2xl p-4">
+        <p className="micro text-on-ink-muted">Queue cleared</p>
+        <p className="display text-lime mt-1 text-2xl">{percent}%</p>
+        <div className="bg-on-ink/15 mt-3 h-1.5 overflow-hidden rounded-full">
+          <div className="bg-lime h-full rounded-full" style={{ width: `${percent}%` }} />
         </div>
+        <p className="numeric text-on-ink-muted mt-2 text-xs">
+          {resolved} of {total} refunded or rejected
+        </p>
       </div>
     </div>
   );

@@ -9,12 +9,12 @@ export function StatusPill({ status, className }: { status: RefundStatus; classN
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium whitespace-nowrap",
+        "border-border inline-flex items-center gap-1.5 rounded-lg border px-2 py-0.5 text-xs font-bold whitespace-nowrap",
         meta.tint,
         className,
       )}
     >
-      <Icon className="size-3.5 shrink-0" aria-hidden />
+      <Icon className="size-3 shrink-0" aria-hidden />
       {meta.label}
     </span>
   );

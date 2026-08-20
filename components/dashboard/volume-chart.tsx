@@ -9,15 +9,17 @@ export function VolumeChart({ data }: { data: DailyVolume[] }) {
   const value = data.reduce((sum, day) => sum + day.cents, 0);
 
   return (
-    <section className="bg-card border-border shadow-card flex h-full flex-col rounded-xl border p-5">
+    <section className="bg-card border-border flex h-full flex-col rounded-2xl border p-5">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <h2 className="font-heading text-base font-semibold">Requests coming in</h2>
-          <p className="text-muted-foreground text-xs">Last {data.length} days</p>
+          <p className="micro text-muted-foreground">Requests coming in</p>
+          <p className="mt-1 text-base font-bold">Last {data.length} days</p>
         </div>
         <div className="text-right">
-          <p className="numeric text-2xl font-bold">{requests}</p>
-          <p className="text-muted-foreground text-xs">{formatMoneyCompact(value)} requested</p>
+          <p className="display text-3xl">{requests}</p>
+          <p className="numeric text-muted-foreground text-xs">
+            {formatMoneyCompact(value)} requested
+          </p>
         </div>
       </div>
 
@@ -26,17 +28,17 @@ export function VolumeChart({ data }: { data: DailyVolume[] }) {
           const isBusiest = day.total === busiest.total && day.total > 0;
 
           return (
-            <li key={day.date} className="flex h-full flex-1 flex-col justify-end gap-2">
+            <li key={day.date} className="flex h-full flex-1 flex-col justify-end">
               <div
                 className={cn(
-                  "w-full rounded-t-md transition-colors",
+                  "w-full",
                   day.total === 0
-                    ? "bg-muted"
+                    ? "bg-divider"
                     : isBusiest
-                      ? "bg-amber-mark"
-                      : "bg-brand-200",
+                      ? "border-border bg-lime rounded-t-md border-x border-t"
+                      : "border-border bg-foreground/15 rounded-t-md border-x border-t",
                 )}
-                style={{ height: `${Math.max(day.total === 0 ? 2 : 8, (day.total / peak) * 100)}%` }}
+                style={{ height: day.total === 0 ? "2px" : `${Math.max(10, (day.total / peak) * 88)}%` }}
               >
                 <span className="sr-only">
                   {formatDayShort(day.date)}: {day.total} requests
@@ -47,18 +49,15 @@ export function VolumeChart({ data }: { data: DailyVolume[] }) {
         })}
       </ol>
 
-      <div className="text-muted-foreground mt-2 flex justify-between text-xs">
+      <div className="border-divider text-muted-foreground mt-2 flex justify-between border-t pt-2 text-xs">
         <span>{formatDayShort(data[0].date)}</span>
+        {busiest.total > 0 && (
+          <span className="text-foreground font-bold">
+            Busiest {formatDayShort(busiest.date)} · {busiest.total}
+          </span>
+        )}
         <span>{formatDayShort(data[data.length - 1].date)}</span>
       </div>
-
-      {busiest.total > 0 && (
-        <p className="text-muted-foreground mt-4 text-xs">
-          Busiest day was{" "}
-          <span className="text-amber-fg font-medium">{formatDayShort(busiest.date)}</span> with{" "}
-          <span className="numeric font-medium">{busiest.total}</span> requests.
-        </p>
-      )}
     </section>
   );
 }

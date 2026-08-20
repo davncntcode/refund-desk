@@ -42,7 +42,7 @@ export default async function RefundsPage({ searchParams }: PageProps<"/refunds"
           </span>
           <Link
             href={buildRefundsHref(query, { q: "", page: 1 })}
-            className="border-border hover:bg-muted focus-visible:ring-ring inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs focus-visible:ring-2 focus-visible:outline-none"
+            className="border-border hover:bg-muted focus-visible:ring-ring inline-flex items-center gap-1 rounded-lg border px-2 py-0.5 text-xs font-bold focus-visible:ring-2 focus-visible:outline-none"
           >
             <X className="size-3" aria-hidden />
             Clear
@@ -50,7 +50,7 @@ export default async function RefundsPage({ searchParams }: PageProps<"/refunds"
         </div>
       )}
 
-      <div className="bg-card border-border shadow-card overflow-hidden rounded-xl border">
+      <div className="bg-card border-border overflow-hidden rounded-2xl border">
         {rows.length === 0 ? (
           isFiltered ? (
             <EmptyState
@@ -60,7 +60,7 @@ export default async function RefundsPage({ searchParams }: PageProps<"/refunds"
             >
               <Link
                 href="/refunds"
-                className="bg-primary text-primary-foreground focus-visible:ring-ring rounded-full px-4 py-2 text-sm font-medium focus-visible:ring-2 focus-visible:outline-none"
+                className="border-border bg-primary text-primary-foreground focus-visible:ring-ring rounded-lg border px-4 py-2 text-sm font-bold focus-visible:ring-2 focus-visible:outline-none"
               >
                 Clear filters
               </Link>

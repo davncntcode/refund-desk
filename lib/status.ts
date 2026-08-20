@@ -11,31 +11,31 @@ type StatusMeta = {
 export const STATUS_META: Record<RefundStatus, StatusMeta> = {
   pending: {
     label: "Pending",
-    tint: "bg-butter text-butter-fg",
+    tint: "bg-chip-amber text-chip-ink",
     icon: Clock,
     hint: "Waiting for someone to pick it up",
   },
   in_review: {
     label: "In review",
-    tint: "bg-sky text-sky-fg",
+    tint: "bg-chip-peri text-chip-ink",
     icon: Search,
     hint: "Being checked against the payment record",
   },
   approved: {
     label: "Approved",
-    tint: "bg-mint text-mint-fg",
+    tint: "bg-chip-sage text-chip-ink",
     icon: CheckCircle2,
     hint: "Decided, waiting for the money to move",
   },
   rejected: {
     label: "Rejected",
-    tint: "bg-rose text-rose-fg",
+    tint: "bg-chip-clay text-chip-ink",
     icon: XCircle,
     hint: "Declined with a reason on the record",
   },
   refunded: {
     label: "Refunded",
-    tint: "bg-lilac text-lilac-fg",
+    tint: "bg-chip-teal text-chip-ink",
     icon: Wallet,
     hint: "Money returned to the customer",
   },

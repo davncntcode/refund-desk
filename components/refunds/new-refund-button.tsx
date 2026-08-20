@@ -19,7 +19,7 @@ export function NewRefundButton() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="rounded-full">
+        <Button className="border-border border font-bold">
           <Plus className="size-4" aria-hidden />
           <span className="hidden sm:inline">New request</span>
         </Button>

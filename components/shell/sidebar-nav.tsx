@@ -28,22 +28,16 @@ export function SidebarNav({ counts, onNavigate }: { counts: StatusCounts; onNav
             onClick={onNavigate}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex items-center gap-3 rounded-full px-3 py-2 text-sm font-medium transition-colors",
-              "focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none",
+              "focus-visible:ring-ring flex items-center gap-2.5 rounded-lg border px-2.5 py-2 text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:outline-none",
               active
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                ? "border-border bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted border-transparent",
             )}
           >
             <Icon className="size-4 shrink-0" aria-hidden />
             <span className="flex-1 truncate">{item.label}</span>
             {total !== undefined && total > 0 && (
-              <span
-                className={cn(
-                  "numeric rounded-full px-1.5 py-0.5 text-xs",
-                  active ? "bg-primary-foreground/20" : "bg-muted text-muted-foreground",
-                )}
-              >
+              <span className={cn("numeric text-xs font-bold", !active && "text-muted-foreground")}>
                 {total}
               </span>
             )}

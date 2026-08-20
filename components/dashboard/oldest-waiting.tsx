@@ -7,15 +7,15 @@ import { formatMoney, formatRelative } from "@/lib/format";
 
 export function OldestWaiting({ rows }: { rows: RefundRequest[] }) {
   return (
-    <section className="bg-card border-border shadow-card overflow-hidden rounded-xl border">
+    <section className="bg-card border-border overflow-hidden rounded-2xl border">
       <div className="flex items-baseline justify-between gap-2 p-5 pb-3">
         <div>
-          <h2 className="font-heading text-base font-semibold">Waiting longest</h2>
-          <p className="text-muted-foreground text-xs">Clear these first</p>
+          <p className="micro text-muted-foreground">Waiting longest</p>
+          <p className="mt-1 text-base font-bold">Clear these first</p>
         </div>
         <Link
           href="/refunds?status=pending"
-          className="text-brand-500 focus-visible:ring-ring rounded-sm text-xs font-medium hover:underline focus-visible:ring-2 focus-visible:outline-none"
+          className="focus-visible:ring-ring rounded-sm text-xs font-bold underline decoration-1 underline-offset-2 focus-visible:ring-2 focus-visible:outline-none"
         >
           View all
         </Link>
@@ -28,16 +28,16 @@ export function OldestWaiting({ rows }: { rows: RefundRequest[] }) {
           description="Nothing is waiting on a decision right now."
         />
       ) : (
-        <ul className="divide-border divide-y">
+        <ul className="divide-divider divide-y">
           {rows.map((row) => (
             <li key={row.id}>
               <Link
                 href={`/refunds/${row.id}`}
-                className="hover:bg-muted/60 focus-visible:ring-ring block px-5 py-3 focus-visible:ring-2 focus-visible:outline-none"
+                className="hover:bg-muted focus-visible:ring-ring block px-5 py-3 focus-visible:ring-2 focus-visible:outline-none"
               >
                 <div className="flex items-center justify-between gap-3">
-                  <span className="truncate text-sm font-medium">{row.customerName}</span>
-                  <span className="numeric shrink-0 text-sm font-semibold">
+                  <span className="truncate text-sm font-semibold">{row.customerName}</span>
+                  <span className="numeric shrink-0 text-sm font-bold">
                     {formatMoney(row.amountCents)}
                   </span>
                 </div>

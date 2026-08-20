@@ -1,24 +1,24 @@
 import Link from "next/link";
-import { REFUND_STATUSES } from "@/lib/domain";
+import { REFUND_STATUSES, type RefundStatus } from "@/lib/domain";
 import type { StatusCounts } from "@/lib/db/queries";
 import { STATUS_META } from "@/lib/status";
 import { cn } from "@/lib/utils";
 
-const BAR_TINT: Record<string, string> = {
-  pending: "bg-amber-mark",
-  in_review: "bg-sky-fg/70",
-  approved: "bg-mint-fg/70",
-  rejected: "bg-rose-fg/70",
-  refunded: "bg-lilac-fg/70",
+const BAR: Record<RefundStatus, string> = {
+  pending: "bg-chip-amber",
+  in_review: "bg-chip-peri",
+  approved: "bg-chip-sage",
+  rejected: "bg-chip-clay",
+  refunded: "bg-chip-teal",
 };
 
 export function StatusBreakdown({ counts }: { counts: StatusCounts }) {
   return (
-    <section className="bg-card border-border shadow-card rounded-xl border p-5">
-      <h2 className="font-heading text-base font-semibold">Where the queue sits</h2>
-      <p className="text-muted-foreground text-xs">Every request by status</p>
+    <section className="bg-card border-border rounded-2xl border p-5">
+      <p className="micro text-muted-foreground">Where the queue sits</p>
+      <p className="mt-1 text-base font-bold">Every request by status</p>
 
-      <ul className="mt-5 space-y-4">
+      <ul className="mt-5 space-y-3.5">
         {REFUND_STATUSES.map((status) => {
           const total = counts[status];
           const percent = counts.all === 0 ? 0 : Math.round((total / counts.all) * 100);
@@ -30,16 +30,17 @@ export function StatusBreakdown({ counts }: { counts: StatusCounts }) {
                 className="focus-visible:ring-ring group block rounded-md focus-visible:ring-2 focus-visible:outline-none"
               >
                 <div className="flex items-baseline justify-between gap-3 text-sm">
-                  <span className="font-medium group-hover:underline">
+                  <span className="font-semibold group-hover:underline">
                     {STATUS_META[status].label}
                   </span>
-                  <span className="numeric text-muted-foreground text-xs">
-                    {total} ({percent}%)
+                  <span className="numeric text-xs font-bold">
+                    {total}
+                    <span className="text-muted-foreground ml-1.5 font-normal">{percent}%</span>
                   </span>
                 </div>
-                <div className="bg-muted mt-1.5 h-2 overflow-hidden rounded-full">
+                <div className="border-divider bg-muted mt-1.5 h-2.5 overflow-hidden rounded-md border">
                   <div
-                    className={cn("h-full rounded-full", BAR_TINT[status])}
+                    className={cn("h-full", BAR[status])}
                     style={{ width: `${percent}%` }}
                   />
                 </div>

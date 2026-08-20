@@ -12,7 +12,7 @@ import { nextStatuses, STATUS_META } from "@/lib/status";
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <dt className="text-muted-foreground text-xs font-medium tracking-wide uppercase">{label}</dt>
+      <dt className="micro text-muted-foreground">{label}</dt>
       <dd className="mt-1 text-sm">{children}</dd>
     </div>
   );
@@ -28,42 +28,40 @@ export default async function RefundDetailPage({ params }: PageProps<"/refunds/[
   const next = nextStatuses(request.status);
 
   return (
-    <>
+    <div className="space-y-4">
       <Link
         href="/refunds"
-        className="text-muted-foreground hover:text-foreground focus-visible:ring-ring mb-4 inline-flex items-center gap-1.5 rounded-md text-sm focus-visible:ring-2 focus-visible:outline-none"
+        className="text-muted-foreground hover:text-foreground focus-visible:ring-ring inline-flex items-center gap-1.5 rounded-md text-xs font-bold uppercase tracking-wide focus-visible:ring-2 focus-visible:outline-none"
       >
-        <ArrowLeft className="size-4" aria-hidden />
+        <ArrowLeft className="size-3.5" aria-hidden />
         All requests
       </Link>
 
-      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-        <div className="space-y-2">
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="numeric font-heading text-2xl font-bold tracking-tight sm:text-3xl">
-              {request.reference}
-            </h1>
-            <StatusPill status={request.status} />
+      <section className="border-border bg-lime text-chip-ink rounded-2xl border p-6 sm:p-8">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="micro">Requested</p>
+            <p className="display mt-2 text-[2.75rem] sm:text-5xl">
+              {formatMoney(request.amountCents)}
+            </p>
+            <h1 className="numeric mt-2 text-sm font-bold">{request.reference}</h1>
           </div>
-          <p className="text-muted-foreground text-sm">{STATUS_META[request.status].hint}</p>
+          <div className="flex flex-col items-start gap-2 sm:items-end">
+            <StatusPill status={request.status} />
+            <p className="max-w-[16rem] text-xs font-semibold sm:text-right">
+              {STATUS_META[request.status].hint}
+            </p>
+          </div>
         </div>
-        <div className="text-right">
-          <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-            Requested
-          </p>
-          <p className="numeric text-2xl font-bold sm:text-3xl">
-            {formatMoney(request.amountCents)}
-          </p>
-        </div>
-      </div>
+      </section>
 
       <div className="grid items-start gap-4 lg:grid-cols-3">
-        <section className="bg-card border-border shadow-card rounded-xl border p-5 lg:col-span-2">
-          <h2 className="font-heading mb-4 text-base font-semibold">The request</h2>
+        <section className="bg-card border-border rounded-2xl border p-5 lg:col-span-2">
+          <p className="micro text-muted-foreground">The request</p>
 
-          <dl className="grid gap-4 sm:grid-cols-2">
+          <dl className="mt-4 grid gap-4 sm:grid-cols-2">
             <Field label="Customer">
-              <span className="font-medium">{request.customerName}</span>
+              <span className="font-semibold">{request.customerName}</span>
             </Field>
             <Field label="Email">
               <a
@@ -85,30 +83,28 @@ export default async function RefundDetailPage({ params }: PageProps<"/refunds/[
             </Field>
           </dl>
 
-          <div className="border-border mt-5 border-t pt-5">
-            <h3 className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-              In the customer&rsquo;s words
-            </h3>
+          <div className="border-divider mt-5 border-t pt-5">
+            <h2 className="micro text-muted-foreground">In the customer&rsquo;s words</h2>
             <p className="mt-2 text-sm leading-relaxed">{request.reason}</p>
           </div>
         </section>
 
         <div className="space-y-4">
-          <section className="bg-card border-border shadow-card rounded-xl border p-5">
-            <h2 className="font-heading mb-1 text-base font-semibold">Move it forward</h2>
-            <p className="text-muted-foreground mb-4 text-xs">
+          <section className="bg-card border-border rounded-2xl border p-5">
+            <p className="micro text-muted-foreground">Move it forward</p>
+            <p className="mt-1 mb-4 text-xs">
               Only the steps allowed from {STATUS_META[request.status].label.toLowerCase()} are
               offered.
             </p>
             <StatusUpdateForm id={request.id} current={request.status} next={next} />
           </section>
 
-          <section className="bg-card border-border shadow-card rounded-xl border p-5">
-            <h2 className="font-heading mb-5 text-base font-semibold">History</h2>
+          <section className="bg-card border-border rounded-2xl border p-5">
+            <p className="micro text-muted-foreground mb-5">History</p>
             <StatusTimeline events={events} />
           </section>
         </div>
       </div>
-    </>
+    </div>
   );
 }

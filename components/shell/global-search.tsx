@@ -29,7 +29,7 @@ export function GlobalSearch() {
         defaultValue={current}
         placeholder="Search name, email or reference"
         aria-label="Search refund requests"
-        className="border-input bg-card focus-visible:ring-ring h-10 w-full rounded-full border pr-4 pl-9 text-sm focus-visible:ring-2 focus-visible:outline-none"
+        className="border-border bg-card-alt focus-visible:ring-ring h-9 w-full rounded-lg border pr-3 pl-9 text-sm focus-visible:ring-2 focus-visible:outline-none"
       />
     </form>
   );
