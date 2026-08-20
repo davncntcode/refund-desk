@@ -54,8 +54,9 @@ export function NewRefundForm({ onDone }: { onDone: () => void }) {
   const reasonCategory = useWatch({ control, name: "reasonCategory" });
   const reasonLength = reason?.length ?? 0;
 
-  const onSubmit = form.handleSubmit(async (values) => {
-    const result = await createRefund(values);
+  // handleSubmit has already validated, the action re-parses the raw input itself
+  const onSubmit = form.handleSubmit(async () => {
+    const result = await createRefund(form.getValues());
 
     if (!result.ok) {
       for (const [field, messages] of Object.entries(result.fieldErrors ?? {})) {

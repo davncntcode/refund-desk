@@ -1,8 +1,8 @@
 import { existsSync } from "node:fs";
 import { defineConfig } from "drizzle-kit";
 
-// drizzle-kit runs outside next, load env itself
-if (existsSync(".env.local")) process.loadEnvFile(".env.local");
+// an explicit env var wins, otherwise fall back to .env.local
+if (!process.env.DATABASE_URL && existsSync(".env.local")) process.loadEnvFile(".env.local");
 
 const url = process.env.DATABASE_URL ?? "file:./data/refunds.db";
 const authToken = process.env.DATABASE_AUTH_TOKEN;
