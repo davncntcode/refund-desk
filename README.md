@@ -235,16 +235,49 @@ are the two files to open when you need to know how data moves.
 
 ## Deployment
 
-The app is a standard Next.js build. For the database, point it at a Turso instance:
+### Vercel
 
-```bash
-DATABASE_URL=libsql://your-database.turso.io
-DATABASE_AUTH_TOKEN=your-token
-```
+Supported, with one requirement: **the default SQLite file cannot be used there.** A
+serverless filesystem is read-only and separate per invocation, so the database has to be
+remote. Turso speaks libSQL, so no application code changes — only the two variables.
 
-Run `npm run db:migrate` once against it, then deploy. No code changes — the driver switch is
-automatic. On a VPS you can keep the SQLite file instead; mount `data/` on a volume so it
-survives a redeploy.
+1. Create a Turso database, in the same region as your Vercel functions, and copy its URL
+   and auth token.
+2. Apply the migrations once, from your machine or from CI:
+
+   ```bash
+   DATABASE_URL=libsql://your-database.turso.io \
+   DATABASE_AUTH_TOKEN=your-token \
+   npm run db:migrate
+   ```
+
+   Seed it the same way if you want the demo rows.
+3. Import the repo on Vercel and set `DATABASE_URL` and `DATABASE_AUTH_TOKEN` in the project
+   environment.
+4. Deploy.
+
+No `vercel.json`, no adapter, no change to the output mode. `engines.node` pins the runtime.
+
+Two things that make this safe rather than lucky:
+
+- **The build never touches the database.** Every route is server-rendered on demand, so
+  nothing is prerendered that needs data and a build cannot fail on a database problem.
+- **A missing `DATABASE_URL` fails loudly.** In production the app refuses to fall back to
+  the local file default, so you get a clear message instead of an obscure read-only
+  filesystem error on the first request.
+
+**Migrations do not run on deploy, on purpose.** Run `npm run db:migrate` against the
+production URL yourself, or from CI, before shipping a schema change.
+
+`@libsql/client` carries a native module for local file access. Vercel installs it without
+trouble — the linux-x64 prebuilds are in the lockfile — but a remote-only deployment that
+would rather not ship it can import `@libsql/client/web` in `lib/db/index.ts` instead.
+
+### A server or a container
+
+Keep the SQLite file. Set `DATABASE_URL` explicitly — production requires it — and mount
+`data/` on a persistent volume so it survives a redeploy. Everything else is
+`npm run build && npm start`.
 
 ## Design
 
