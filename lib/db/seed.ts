@@ -1,4 +1,5 @@
 import { nanoid } from "nanoid";
+import { env } from "../env";
 import { db } from "./index";
 import { refundRequests, refundStatusEvents } from "./schema";
 import { REASON_CATEGORIES, type ReasonCategory, type RefundStatus } from "../domain";
@@ -154,6 +155,10 @@ async function main() {
       updatedAt: new Date(Math.min(at, now)),
     });
   });
+
+  // say what is about to be wiped, so a mistargeted seed is obvious
+  const target = env.DATABASE_URL.replace(/\?.*$/, "");
+  console.log(`clearing and reseeding ${target}`);
 
   await db.delete(refundStatusEvents);
   await db.delete(refundRequests);
