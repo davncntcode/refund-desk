@@ -5,7 +5,7 @@ import { STATUS_META } from "@/lib/status";
 import { cn } from "@/lib/utils";
 
 const BAR_TINT: Record<string, string> = {
-  pending: "bg-butter-fg/70",
+  pending: "bg-amber-mark",
   in_review: "bg-sky-fg/70",
   approved: "bg-mint-fg/70",
   rejected: "bg-rose-fg/70",

@@ -8,7 +8,7 @@ export const REASON_META: Record<ReasonCategory, ReasonMeta> = {
   damaged_item: { label: "Damaged item", tint: "bg-rose text-rose-fg" },
   cancelled_order: { label: "Cancelled order", tint: "bg-lilac text-lilac-fg" },
   billing_error: { label: "Billing error", tint: "bg-butter text-butter-fg" },
-  other: { label: "Other", tint: "bg-mint text-mint-fg" },
+  other: { label: "Other", tint: "bg-muted text-muted-foreground" },
 };
 
 export function isReasonCategory(value: unknown): value is ReasonCategory {

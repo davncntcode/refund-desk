@@ -9,7 +9,7 @@ export function VolumeChart({ data }: { data: DailyVolume[] }) {
   const value = data.reduce((sum, day) => sum + day.cents, 0);
 
   return (
-    <section className="bg-card border-border shadow-card rounded-xl border p-5">
+    <section className="bg-card border-border shadow-card flex h-full flex-col rounded-xl border p-5">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <h2 className="font-heading text-base font-semibold">Requests coming in</h2>
@@ -21,7 +21,7 @@ export function VolumeChart({ data }: { data: DailyVolume[] }) {
         </div>
       </div>
 
-      <ol className="mt-6 flex h-36 items-end gap-1.5" aria-label="Refund requests per day">
+      <ol className="mt-6 flex min-h-36 flex-1 items-end gap-1.5" aria-label="Refund requests per day">
         {data.map((day) => {
           const isBusiest = day.total === busiest.total && day.total > 0;
 

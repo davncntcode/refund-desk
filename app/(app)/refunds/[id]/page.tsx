@@ -9,6 +9,15 @@ import { getRefund } from "@/lib/db/queries";
 import { formatDateTime, formatMoney, formatRelative } from "@/lib/format";
 import { nextStatuses, STATUS_META } from "@/lib/status";
 
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <dt className="text-muted-foreground text-xs font-medium tracking-wide uppercase">{label}</dt>
+      <dd className="mt-1 text-sm">{children}</dd>
+    </div>
+  );
+}
+
 export default async function RefundDetailPage({ params }: PageProps<"/refunds/[id]">) {
   const { id } = await params;
   const record = await getRefund(id);
@@ -48,71 +57,57 @@ export default async function RefundDetailPage({ params }: PageProps<"/refunds/[
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="space-y-4 lg:col-span-2">
+      <div className="grid items-start gap-4 lg:grid-cols-3">
+        <section className="bg-card border-border shadow-card rounded-xl border p-5 lg:col-span-2">
+          <h2 className="font-heading mb-4 text-base font-semibold">The request</h2>
+
+          <dl className="grid gap-4 sm:grid-cols-2">
+            <Field label="Customer">
+              <span className="font-medium">{request.customerName}</span>
+            </Field>
+            <Field label="Email">
+              <a
+                href={`mailto:${request.customerEmail}`}
+                className="focus-visible:ring-ring inline-flex items-center gap-1.5 rounded-sm hover:underline focus-visible:ring-2 focus-visible:outline-none"
+              >
+                <Mail className="text-muted-foreground size-3.5" aria-hidden />
+                {request.customerEmail}
+              </a>
+            </Field>
+            <Field label="Category">
+              <ReasonChip category={request.reasonCategory} />
+            </Field>
+            <Field label="Opened">
+              <time dateTime={request.createdAt.toISOString()}>
+                {formatDateTime(request.createdAt)}
+              </time>
+              <span className="text-muted-foreground"> · {formatRelative(request.createdAt)}</span>
+            </Field>
+          </dl>
+
+          <div className="border-border mt-5 border-t pt-5">
+            <h3 className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+              In the customer&rsquo;s words
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed">{request.reason}</p>
+          </div>
+        </section>
+
+        <div className="space-y-4">
           <section className="bg-card border-border shadow-card rounded-xl border p-5">
-            <h2 className="font-heading mb-4 text-base font-semibold">The request</h2>
-
-            <dl className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <dt className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-                  Customer
-                </dt>
-                <dd className="mt-1 text-sm font-medium">{request.customerName}</dd>
-              </div>
-              <div>
-                <dt className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-                  Email
-                </dt>
-                <dd className="mt-1 text-sm">
-                  <a
-                    href={`mailto:${request.customerEmail}`}
-                    className="focus-visible:ring-ring inline-flex items-center gap-1.5 rounded-sm hover:underline focus-visible:ring-2 focus-visible:outline-none"
-                  >
-                    <Mail className="text-muted-foreground size-3.5" aria-hidden />
-                    {request.customerEmail}
-                  </a>
-                </dd>
-              </div>
-              <div>
-                <dt className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-                  Category
-                </dt>
-                <dd className="mt-1">
-                  <ReasonChip category={request.reasonCategory} />
-                </dd>
-              </div>
-              <div>
-                <dt className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-                  Opened
-                </dt>
-                <dd className="mt-1 text-sm">
-                  <time dateTime={request.createdAt.toISOString()}>
-                    {formatDateTime(request.createdAt)}
-                  </time>
-                  <span className="text-muted-foreground"> · {formatRelative(request.createdAt)}</span>
-                </dd>
-              </div>
-            </dl>
-
-            <div className="border-border mt-5 border-t pt-5">
-              <dt className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-                In the customer&rsquo;s words
-              </dt>
-              <p className="mt-2 text-sm leading-relaxed">{request.reason}</p>
-            </div>
-          </section>
-
-          <section className="bg-card border-border shadow-card rounded-xl border p-5">
-            <h2 className="font-heading mb-4 text-base font-semibold">Move it forward</h2>
+            <h2 className="font-heading mb-1 text-base font-semibold">Move it forward</h2>
+            <p className="text-muted-foreground mb-4 text-xs">
+              Only the steps allowed from {STATUS_META[request.status].label.toLowerCase()} are
+              offered.
+            </p>
             <StatusUpdateForm id={request.id} current={request.status} next={next} />
           </section>
-        </div>
 
-        <section className="bg-card border-border shadow-card h-fit rounded-xl border p-5">
-          <h2 className="font-heading mb-5 text-base font-semibold">History</h2>
-          <StatusTimeline events={events} />
-        </section>
+          <section className="bg-card border-border shadow-card rounded-xl border p-5">
+            <h2 className="font-heading mb-5 text-base font-semibold">History</h2>
+            <StatusTimeline events={events} />
+          </section>
+        </div>
       </div>
     </>
   );
