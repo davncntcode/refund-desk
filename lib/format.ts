@@ -61,3 +61,13 @@ export function parseAmountToCents(input: string) {
 export function centsToAmountInput(cents: number) {
   return (cents / 100).toFixed(2);
 }
+
+const dayShort = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  timeZone: TIME_ZONE,
+});
+
+export function formatDayShort(isoDate: string) {
+  return dayShort.format(new Date(`${isoDate}T00:00:00Z`));
+}
