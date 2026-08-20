@@ -94,7 +94,8 @@ const DAY = 24 * HOUR;
 
 function emailFor(name: string, index: number) {
   const [first, last] = name.toLowerCase().split(" ");
-  const host = pick(["gmail.com", "outlook.com", "fastmail.com", "hey.com", "proton.me"]);
+  // rfc 2606 reserved domains, so demo data can never reach a real inbox
+  const host = pick(["example.com", "example.net", "example.org", "mail.example.com"]);
   return `${first}.${last}${index % 4 === 0 ? index : ""}@${host}`;
 }
 
